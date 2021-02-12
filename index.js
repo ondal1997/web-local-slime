@@ -8,6 +8,7 @@ const images = {}
 
 const player = {
     type: '슬라임',
+    imageKey: '슬라임',
     position: {
         x: 50,
         y: 50
@@ -49,7 +50,7 @@ const gameIdle = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     for (const entity of entities) {
-        const image = images[entity.type]
+        const image = images[entity.imageKey]
         ctx.save()
         ctx.translate(entity.position.x, entity.position.y)
         ctx.scale(entity.direction.x, 1)
