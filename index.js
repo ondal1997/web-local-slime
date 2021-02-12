@@ -1,1 +1,122 @@
-const _0x213c=['restore','15020IjUEvI','76wbptPl','addEventListener','img','149319zHgcXp','14866qmjlxo','2573FflLAc','268EvSOvV','cos','canvas','1IJZKKx','abs','drawImage','scale','637884mEhIZv','392712LBuRgV','now','슬라임.png','clearRect','868351UhzbDV','translate','offsetY','querySelector','save','center','width','onload','imageSmoothingEnabled','click','src'];const _0x568e=function(_0x5d6cf9,_0x41604e){_0x5d6cf9=_0x5d6cf9-0x1b3;let _0x213c5b=_0x213c[_0x5d6cf9];return _0x213c5b;};const _0x47418b=_0x568e;(function(_0x56320f,_0x3b4ea1){const _0x461d0=_0x568e;while(!![]){try{const _0x321282=parseInt(_0x461d0(0x1ca))*-parseInt(_0x461d0(0x1b4))+parseInt(_0x461d0(0x1cf))+-parseInt(_0x461d0(0x1c4))+-parseInt(_0x461d0(0x1c0))+parseInt(_0x461d0(0x1c6))*-parseInt(_0x461d0(0x1c7))+parseInt(_0x461d0(0x1ce))+parseInt(_0x461d0(0x1c5))*parseInt(_0x461d0(0x1c1));if(_0x321282===_0x3b4ea1)break;else _0x56320f['push'](_0x56320f['shift']());}catch(_0x57e24e){_0x56320f['push'](_0x56320f['shift']());}}}(_0x213c,0x6af8e));const canvas=document[_0x47418b(0x1b7)](_0x47418b(0x1c9)),ctx=canvas['getContext']('2d');ctx[_0x47418b(0x1bc)]=![];let x=0x32,y=0x32,vx=0x0,vy=0x0,Xdirection=0x1,Ydirection=0x1,movePoint=0x3,bclick=![],dstX=0x32,dstY=0x32,oldTime=Date[_0x47418b(0x1d0)](),deltaTime=0xa;const loop=()=>{const _0x1fef63=_0x47418b,_0x3275a1=Date['now']();while(_0x3275a1-oldTime>=deltaTime){oldTime+=deltaTime;if(bclick){bclick=![];const _0x3ba4a6=Math['atan2'](dstY-y,dstX-x);Math[_0x1fef63(0x1cb)](_0x3ba4a6)>Math['PI']/0x2?Xdirection=-0x1:Xdirection=0x1;_0x3ba4a6<0x0?Ydirection=-0x1:Ydirection=0x1;const _0x477265=Math[_0x1fef63(0x1c8)](_0x3ba4a6)*movePoint,_0x2844ed=Math['sin'](_0x3ba4a6)*movePoint;vx+=_0x477265,vy+=_0x2844ed;}vx*=0.95,vy*=0.95,x+=vx,y+=vy,ctx[_0x1fef63(0x1b3)](0x0,0x0,canvas[_0x1fef63(0x1ba)],canvas['height']);const _0x196c81=image;ctx[_0x1fef63(0x1b8)](),ctx[_0x1fef63(0x1b5)](x,y),ctx[_0x1fef63(0x1cd)](Xdirection,0x1),ctx[_0x1fef63(0x1b5)](-_0x196c81[_0x1fef63(0x1b9)]['x'],-_0x196c81[_0x1fef63(0x1b9)]['y']),ctx[_0x1fef63(0x1cc)](_0x196c81,0x0,0x0),ctx[_0x1fef63(0x1bf)]();}setTimeout(loop);},image=document['createElement'](_0x47418b(0x1c3));image[_0x47418b(0x1b9)]={'x':0x11,'y':0x16},image[_0x47418b(0x1be)]=_0x47418b(0x1d1),image[_0x47418b(0x1bb)]=()=>{const _0x461aff=_0x47418b;canvas[_0x461aff(0x1c2)](_0x461aff(0x1bd),_0x332b34=>{const _0x58f41a=_0x461aff;bclick=!![],dstX=_0x332b34['offsetX'],dstY=_0x332b34[_0x58f41a(0x1b6)];}),setTimeout(loop);};
+// 프레임워크 준비 ---
+const canvas = document.querySelector('canvas')
+const ctx = canvas.getContext('2d')
+ctx.imageSmoothingEnabled = false
+
+// 게임 정의 ---
+const images = {}
+
+const player = {
+    type: '슬라임',
+    position: {
+        x: 50,
+        y: 50
+    },
+    velocity: {
+        x: 0,
+        y: 0
+    },
+    direction: {
+        x: 1,
+        y: 1
+    },
+    movePoint: 3
+}
+
+const entities = [
+    player,
+]
+
+let oldTime
+let deltaTime = 10
+
+const gameIdle = () => {
+    const newTime = Date.now()
+    while (newTime - oldTime >= deltaTime) {
+        oldTime += deltaTime
+
+        // translate
+        for (const entity of entities) {
+            entity.velocity.x *= 0.95
+            entity.velocity.y *= 0.95
+
+            entity.position.x += entity.velocity.x
+            entity.position.y += entity.velocity.y
+        }
+    }
+
+    // render
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    for (const entity of entities) {
+        const image = images[entity.type]
+        ctx.save()
+        ctx.translate(entity.position.x, entity.position.y)
+        ctx.scale(entity.direction.x, 1)
+        ctx.translate(-image.center.x, -image.center.y)
+        ctx.drawImage(image, 0, 0)
+        ctx.restore()
+    }
+
+    setTimeout(gameIdle)
+}
+
+const startGame = () => {
+    canvas.addEventListener('click', (event) => {
+        const x = event.offsetX
+        const y = event.offsetY
+
+        const angle = Math.atan2(y - player.position.y, x - player.position.x)
+
+        if (Math.abs(angle) > Math.PI / 2) {
+            player.direction.x = -1
+        }
+        else {
+            player.direction.x = 1
+        }
+
+        if (angle < 0) {
+            player.direction.y = -1
+        }
+        else {
+            player.direction.y = 1
+        }
+
+        player.velocity.x += Math.cos(angle) * player.movePoint
+        player.velocity.y += Math.sin(angle) * player.movePoint
+    })
+    oldTime = Date.now()
+    setTimeout(gameIdle)
+}
+
+// 리소스 준비 ---
+const imageResources = [
+    {
+        key: '슬라임',
+        src: '슬라임.png',
+        center: {
+            x: 17,
+            y: 22
+        }
+    },
+]
+
+let imageLoadCount = 0
+let targetLoadCount = imageResources.length
+
+for (const imageResource of imageResources) {
+    const { key, src, center } = imageResource
+    const image = new Image()
+    image.src = src
+    image.center = center
+    image.onload = () => {
+        imageLoadCount++
+        if (imageLoadCount === targetLoadCount) {
+            setTimeout(startGame)
+        }
+    }
+    image.onerror = () => {
+        console.log('에러, 이미지 리소스 로드 실패')
+    }
+    images[key] = image
+}
