@@ -48,7 +48,6 @@ const gameIdle = () => {
 
     // render
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
     for (const entity of entities) {
         const image = images[entity.imageKey]
         ctx.save()
@@ -99,7 +98,7 @@ const imageResources = [
             x: 17,
             y: 22
         }
-    },
+    }
 ]
 
 let imageLoadCount = 0
